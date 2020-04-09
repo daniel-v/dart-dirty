@@ -77,9 +77,9 @@ test_read() {
     });
 
     test("can read a record from the DB stored on the filesystem", () {
-      OnLoadCallback callback = expectAsync((Dirty db) {
+      OnLoadCallback callback = expectAsync1((Dirty db) {
         expect(db['everything'], equals({'answer': 42}));
-      }, count: 1, max: 1) as OnLoadCallback;
+      }, count: 1, max: 1);
 
       // write the required value into the DB
       Dirty db = new Dirty('test/test.db');
@@ -142,11 +142,11 @@ test_remove() {
 
     test("removes from the list of keys in the filesystem store", () {
       expectKeyIsGone() {
-        OnLoadCallback callback = expectAsync((Dirty db) {
+        OnLoadCallback callback = expectAsync1((Dirty db) {
           expect(db.keys.first, equals('first'));
           expect(db.keys.last, equals('last'));
           expect(db.keys.toList(), hasLength(2));
-        }) as OnLoadCallback;
+        });
         new Dirty('test/test.db', onLoad: callback)..close();
       }
 

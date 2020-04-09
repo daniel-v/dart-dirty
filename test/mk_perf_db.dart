@@ -1,10 +1,9 @@
-import 'package:unittest/unittest.dart';
 import 'package:dirty/dirty.dart';
 
 main() {
   var db = new Dirty('test/perf.db');
   db.clear();
-  for (var i=0; i<1e5; i++) {
+  for (var i = 0; i < 1e5; i++) {
     db["key$i"] = {
       'value': i,
       'noise': """

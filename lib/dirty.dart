@@ -12,7 +12,7 @@ final Logger _logger = new Logger('Dirty');
 /// The Dirty class is a quick and dirty way to create a persistent
 /// [HashMap]. In addition to doing all of the usual [HashMap] things, it will
 /// store records in an append-only file database.
-class Dirty implements HashMap<String, Object> {
+class Dirty extends Object with MapMixin<String, Object> {
   RandomAccessFile _io;
   bool _flushing = false;
 
@@ -81,7 +81,7 @@ class Dirty implements HashMap<String, Object> {
   void clear() {
     _docs.clear();
     _io.close();
-    _io = _db.openSync(mode: FileMode.WRITE);
+    _io = _db.openSync(mode: FileMode.write);
   }
 
   void forEach(cb) => _docs.forEach(cb);
@@ -96,11 +96,11 @@ class Dirty implements HashMap<String, Object> {
   }
 
   _load() {
-    _io = _db.openSync(mode: FileMode.APPEND);
+    _io = _db.openSync(mode: FileMode.append);
 
     List<String> lines = _db.readAsLinesSync();
     lines.forEach((line) {
-      var rec = JSON.decode(line);
+      var rec = json.decode(line);
       if (rec['val'] == null) {
         _docs.remove(rec['key']);
       } else {
@@ -112,9 +112,7 @@ class Dirty implements HashMap<String, Object> {
   }
 
   _maybeFlush() {
-    if (_flushing)
-      throw new StateError(
-          'Flushing in progress, this error should have not happened, please report it.');
+    if (_flushing) throw new StateError('Flushing in progress, this error should have not happened, please report it.');
     _flush();
   }
 
@@ -123,7 +121,7 @@ class Dirty implements HashMap<String, Object> {
     Queue<String> queueCopy = new Queue.from(_queue);
     _logger.finest('Writing keys: ${queueCopy.toList()}');
     queueCopy.forEach((key) {
-      String doc = JSON.encode({'key': key, 'val': _docs[key]});
+      String doc = json.encode({'key': key, 'val': _docs[key]});
       _io.writeStringSync("$doc\n");
     });
 
