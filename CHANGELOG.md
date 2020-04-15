@@ -1,3 +1,7 @@
+## 1.0.0
+
+### Upgrade to Dart 2
+
 ## 0.1.5
 
 ### Test Changes
